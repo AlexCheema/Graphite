@@ -1,10 +1,11 @@
 dist/**
 build/**
 
-graphite/tryoutput.toml
-graphite/tryprover.toml
-graphite/proofs/*
-graphite/target/*
+graphite/*/tryoutput.toml
+graphite/*/tryprover.toml
+graphite/*/proofs/*
+graphite/*/target/*
+
 graphite/pygraphite.egg-info/*
 
 env/*

@@ -1,6 +1,6 @@
 [package]
-name = "Graphite"
-authors = ["Eito"]
+name = "Graphite_BFS"
+authors = ["Eito Miyamura"]
 description = "Prove Graph Algorithms"
 compiler_version = "0.19.4"
 license = "MIT"

@@ -10,6 +10,7 @@ NUM_NODES = 10
 
 def parse_args():
     parser = ArgumentParser(description="Noir prover script")
+    parser.add_argument("--algorithm", type=str, help="algorithm name")
     parser.add_argument("--prover_toml_name", type=str, help="prover toml name")
     parser.add_argument("--proof_output", type=str, help="proof output file")
     return parser.parse_args()
@@ -33,12 +34,13 @@ def setup_circuit(
     graph, 
     u_index,
     prover_toml_name,
+    algorithm,
 ):  
     # Process the graph 
     n_nodes = len(graph.nodes())
 
     # Write to prover toml
-    prover_toml_path = f"{prover_toml_name}.toml"
+    prover_toml_path = f"{algorithm}/{prover_toml_name}.toml"
     with open(prover_toml_path, "w") as f:
 
         circuit_input = ""
@@ -88,9 +90,10 @@ edge_matrix = {edge_matrix}
         f.write(circuit_input)
 
 
-def solve_circuit(prover_toml_name, proof_output):
+def solve_circuit(prover_toml_name, proof_output, algorithm):
     import subprocess
 
+    os.chdir(algorithm)
     subprocess.check_output(
         [
             "nargo",
@@ -101,12 +104,15 @@ def solve_circuit(prover_toml_name, proof_output):
             proof_output,
         ]
     )
+    os.chdir("..")
 
     # shutil.copyfile(os.path.join("proofs", f"{prover_toml_name}.proof"), proof_output)
 
 
-def verify_circuit(proof_output):
+def verify_circuit(proof_output, algorithm):
     import subprocess
+
+    os.chdir(algorithm)
     subprocess.check_call(
         [
             "nargo",
@@ -115,21 +121,22 @@ def verify_circuit(proof_output):
             proof_output,
         ]
     )
+    os.chdir("..")
 
-def work(graph, u_index, prover_toml_name, proof_output):
+def work(graph, u_index, prover_toml_name, proof_output, algorithm):
     print("Checking graph...")
     check_graph(graph)
 
     print("Setting up circuit...")
     setup_circuit(
-        graph, u_index, prover_toml_name
+        graph, u_index, prover_toml_name, algorithm
     )
 
     print("Proving circuit...")
-    solve_circuit(prover_toml_name, proof_output)
-        
+    solve_circuit(prover_toml_name, proof_output, algorithm)
+
     print("Verifying circuit...")
-    verify_circuit(proof_output)
+    verify_circuit(proof_output, algorithm)
 
     print("Done!")
 
@@ -157,6 +164,7 @@ def main(args=None):
         u_index,
         args.prover_toml_name,
         args.proof_output,
+        args.algorithm,
     )
 
 
