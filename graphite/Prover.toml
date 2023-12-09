@@ -6,55 +6,55 @@ edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 1
-value = 1
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 2
-value = 2
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 3
-value = 3
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 4
-value = 4
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 5
-value = 5
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 6
-value = 6
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 7
-value = 7
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 8
-value = 8
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
 index = 9
-value = 9
+value = 0
 adj_list = [false, false, false, false, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
