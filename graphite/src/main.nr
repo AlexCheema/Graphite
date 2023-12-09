@@ -61,23 +61,50 @@ fn test_main() {
 
     for i in 0..10 {
         if i as u8 >= 3 {
-            nodes[i] = Node { index: 0 as u8, 
-                              value: i as u8, 
+            nodes[i] = Node { index: i as u8, 
+                              value: 0 as u8, 
                               adj_list: [false; n_nodes], 
                               edge_matrix: [0; n_nodes] };
         } else {
-            nodes[i] = Node { index: 0 as u8, 
-                              value: i as u8, 
+            nodes[i] = Node { index: i as u8, 
+                              value: (i+1) as u8, 
                               adj_list: [false; n_nodes], 
                               edge_matrix: [0; n_nodes] };
         }
     }
 
+    nodes[0].adj_list = [false, true, false, false, false, false, false, false, false, false];
+    nodes[1].adj_list = [false, false, true, true, false, false, false, false, false, false];
+
+    // nodes[0] = Node { index: 0 as u8, 
+    //                   value: 1 as u8, 
+    //                   adj_list: adj_list = [false, true, false, false, false, false, false, false, false, false], 
+    //                   edge_matrix: [0; n_nodes] };
+
+    // nodes[1] = Node { index: 1 as u8, 
+    //                 value: 2 as u8, 
+    //                 adj_list: adj_list = [false, false, true, false, false, false, false, false, false, false], 
+    //                 edge_matrix: [0; n_nodes] };
+    
+    // nodes[0] = Node { index: 2 as u8, 
+    //                   value: 3 as u8, 
+    //                   adj_list: adj_list = [false, false, false, true, false, false, false, false, false, false], 
+    //                   edge_matrix: [0; n_nodes] };
+
+
+
     let graph = Graph { nodes: nodes };
     let result = main(graph, nodes[0]);
 
+    std::println("Hello Testing");
     std::println(result[0]);
-    assert(result[0] == 0);
-    assert(result[1] == 1);
+    std::println(result[1]);
+    std::println(result[2]);
+    std::println(result[3]);
+
+    assert(result[0] == 1);
+    assert(result[1] == 2);
+    assert(result[2] == 3);
+    assert(result[3] == 3);
 
 }

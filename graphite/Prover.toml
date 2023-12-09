@@ -7,7 +7,7 @@ edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 [[graph.nodes]]
 index = 1
 value = 0
-adj_list = [false, false, true, false, false, false, false, false, false, false]
+adj_list = [false, false, true, true, false, false, false, false, false, false]
 edge_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 [[graph.nodes]]
