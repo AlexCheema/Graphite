@@ -4,7 +4,9 @@ import os
 from argparse import ArgumentParser
 import networkx
 import numpy as np
+import pickle
 
+NUM_NODES = 10
 
 def parse_args():
     parser = ArgumentParser(description="Noir prover script")
@@ -13,6 +15,20 @@ def parse_args():
     return parser.parse_args()
 
 
+def check_graph(graph):
+    # Process the graph 
+    n_nodes = len(graph.nodes())
+    if n_nodes > NUM_NODES:
+        raise ValueError(f"The number of nodes in the graph exceeds the maximum limit of {NUM_NODES}.")
+
+
+    def check_edge_weights(graph):
+        for u, v, data in graph.edges(data=True):
+            if not isinstance(data.get('weight', 1), int):
+                raise ValueError(f"Edge weight between nodes {u} and {v} is not an integer.")
+
+    check_edge_weights(graph)
+
 def setup_circuit(
     graph, 
     u_index,
@@ -20,9 +36,6 @@ def setup_circuit(
 ):  
     # Process the graph 
     n_nodes = len(graph.nodes())
-    NUM_NODES = 10
-    if n_nodes > NUM_NODES:
-        raise ValueError(f"The number of nodes in the graph exceeds the maximum limit of {NUM_NODES}.")
 
     # Write to prover toml
     prover_toml_path = f"{prover_toml_name}.toml"
@@ -35,7 +48,7 @@ def setup_circuit(
                 + [False for j in range(NUM_NODES-n_nodes)]
             adj_list = str(adj_list).lower()
             
-            edge_matrix = [0 for j in range(n_nodes)] \
+            edge_matrix = [graph.get_edge_data(i, j)['weight'] if graph.has_edge(i, j) else 0 for j in range(n_nodes)] \
                 + [0 for j in range(NUM_NODES-n_nodes)]
             node_text = f"""[[graph.nodes]]
 index = {i}
@@ -63,7 +76,7 @@ edge_matrix = {edge_matrix}
         adj_list = [True if graph.has_edge(u_index, j) else False for j in range(n_nodes)] \
                 + [False for j in range(NUM_NODES-n_nodes)]
         adj_list = str(adj_list).lower()
-        edge_matrix = [0 for j in range(n_nodes)]\
+        edge_matrix = [graph.get_edge_data(u_index, j)['weight'] if graph.has_edge(u_index, j) else 0 for j in range(n_nodes)]\
                 + [0 for j in range(NUM_NODES-n_nodes)]
         circuit_input += f"""[u]
 index = {u_index}
@@ -104,6 +117,9 @@ def verify_circuit(proof_output):
     )
 
 def work(graph, u_index, prover_toml_name, proof_output):
+    print("Checking graph...")
+    check_graph(graph)
+
     print("Setting up circuit...")
     setup_circuit(
         graph, u_index, prover_toml_name
@@ -128,6 +144,13 @@ def main(args=None):
     G.add_edges_from(edges_numerical)
     u_index = 0
 
+    # Save a static file of the graph G
+    # with open("graph.gpickle", "wb") as f:
+    #     pickle.dump(G, f)
+
+    # Load a static file of the graph G
+    with open("graph.gpickle", "rb") as f:
+        G = pickle.load(f)
 
     work(
         G,
