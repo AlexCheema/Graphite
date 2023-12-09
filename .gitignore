@@ -1,2 +1,6 @@
 dist/**
 build/**
+
+graphite/tryoutput.toml
+graphite/tryprover.toml
+graphite/pygraphite.egg-info/*
