@@ -76,22 +76,6 @@ fn test_main() {
     nodes[0].adj_list = [false, true, false, false, false, false, false, false, false, false];
     nodes[1].adj_list = [false, false, true, true, false, false, false, false, false, false];
 
-    // nodes[0] = Node { index: 0 as u8, 
-    //                   value: 1 as u8, 
-    //                   adj_list: adj_list = [false, true, false, false, false, false, false, false, false, false], 
-    //                   edge_matrix: [0; n_nodes] };
-
-    // nodes[1] = Node { index: 1 as u8, 
-    //                 value: 2 as u8, 
-    //                 adj_list: adj_list = [false, false, true, false, false, false, false, false, false, false], 
-    //                 edge_matrix: [0; n_nodes] };
-    
-    // nodes[0] = Node { index: 2 as u8, 
-    //                   value: 3 as u8, 
-    //                   adj_list: adj_list = [false, false, false, true, false, false, false, false, false, false], 
-    //                   edge_matrix: [0; n_nodes] };
-
-
 
     let graph = Graph { nodes: nodes };
     let result = main(graph, nodes[0]);

@@ -8,4 +8,28 @@
 
 # Getting Started
 
+## Quick Run
+
+`make test_run`
+
+## Playing around
+
+Take a look at `graphite/setup_custom.py`:
+```python
+def main(args=None):
+    if args is None:
+        args = parse_args()
+...
+```
+
+Essentially, just need to put the `networkx` graph `G` and `u_index` which is the index of the graph `G` to run BFS from.
+
+## Make sure:
+ - `G` is indexed by indicies `[0,1,2,3,...]`
+ - `G` is at most `10` nodes (Prototype only, will be fixed)
+
+
+
+# Demo
+
 Try out `demo.ipynb`! Shows you how to create a succinct proof easily in the notebook.
