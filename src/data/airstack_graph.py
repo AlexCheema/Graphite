@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 import networkx as nx
 import os
+import pickle
 
 load_dotenv()  # take environment variables from .env.
 api_key = os.getenv('AIRSTACK_API_KEY')
@@ -76,6 +77,11 @@ async def get_token_transfers_recursive(addresses, token_address=None, depth=3, 
 
     # Query for all the filtered addresses together
     data = await get_token_transfers(filtered_addresses, token_address)
+
+    if not data or 'TokenTransfers' not in data or 'TokenTransfer' not in data['TokenTransfers']:
+      print('bad data', data)
+      return raw_transfers
+
     raw_transfers.append(data)
 
     # Get 'to' addresses for the next recursive call
@@ -189,5 +195,9 @@ async def main():
   print(graph_representation)
   G = create_approx_graph(graph_representation)
   draw_graph(G)
+
+  # Save a static file of the graph G
+  with open("graph.gpickle", "wb") as f:
+      pickle.dump(G, f)
 
 asyncio.run(main())
