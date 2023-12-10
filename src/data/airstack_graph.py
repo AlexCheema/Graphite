@@ -24,12 +24,11 @@ async def get_token_transfers(addresses, token_address=None):
                   """ + ', '.join(f'{{from: {{ _eq: "{addr}" }} }}' for addr in addresses) + """,
                   """ + ', '.join(f'{{to: {{ _eq: "{addr}" }} }}' for addr in addresses) + """
                 ]
-              },
-              """ + (f'{{token: {{address: {{ _eq: "{token_address}" }} }} }}' if token_address else '{}') + """
+              }""" + (f', {{tokenAddress: {{ _eq: "{token_address}" }} }}' if token_address else '') + """
             ]
           }
           blockchain: ethereum
-          limit: 5
+          limit: 20
           order: { blockTimestamp: DESC }
         }
       ) {
@@ -75,18 +74,25 @@ async def get_token_transfers_recursive(addresses, token_address=None, depth=3, 
     filtered_addresses = [addr for addr in addresses if addr.lower() not in visited]
     visited.update(addr.lower() for addr in filtered_addresses)
 
+    if not filtered_addresses:
+       print('no addresses left')
+       return raw_transfers
+
     # Query for all the filtered addresses together
     data = await get_token_transfers(filtered_addresses, token_address)
 
-    if not data or 'TokenTransfers' not in data or 'TokenTransfer' not in data['TokenTransfers']:
+    if not data or 'TokenTransfers' not in data or 'TokenTransfer' not in data['TokenTransfers'] or not data['TokenTransfers']['TokenTransfer']:
       print('bad data', data)
       return raw_transfers
 
     raw_transfers.append(data)
 
-    # Get 'to' addresses for the next recursive call
+    # Get addresses for the next recursive call
     to_addresses = [transfer['to']['addresses'][0] for transfer in data['TokenTransfers']['TokenTransfer']]
-    raw_transfers.extend(await get_token_transfers_recursive(to_addresses, token_address, depth-1, visited))
+    from_addresses = [transfer['from']['addresses'][0] for transfer in data['TokenTransfers']['TokenTransfer']]
+    next_addresses = list(set(to_addresses + from_addresses))
+    print('next addresses', next_addresses)
+    raw_transfers.extend(await get_token_transfers_recursive(next_addresses, token_address, depth-1, visited))
 
     return raw_transfers
 
@@ -185,7 +191,7 @@ async def main():
   USDC_TOKEN_ADDR = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
   USDT_TOKEN_ADDR = '0xdac17f958d2ee523a2206206994597c13d831ec7'
 
-  raw_token_transfers = await get_token_transfers_recursive(["eitomiyamura.eth"], depth=3)
+  raw_token_transfers = await get_token_transfers_recursive(["0x1248d8d1677296e7d4e52fe4f6c14c5ede5025b3"], token_address=USDC_TOKEN_ADDR, depth=3)
   token_transfers = [parse_token_transfers(data) for data in raw_token_transfers]
   # Flatten token_transfers
   token_transfers = [item for sublist in token_transfers for item in sublist]
