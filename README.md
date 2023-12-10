@@ -10,7 +10,9 @@
 
 ## Quick Run
 
-`make test_run`
+`make bfs`
+
+`make no_cycle`
 
 ## Playing around
 
