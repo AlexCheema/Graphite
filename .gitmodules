@@ -1,0 +1,3 @@
+[submodule "graphite/verifier-contracts/lib/forge-std"]
+	path = graphite/verifier-contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

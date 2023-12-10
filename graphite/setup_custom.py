@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import shutil
+import json
 import os
 from argparse import ArgumentParser
 import networkx
@@ -45,50 +46,55 @@ def setup_circuit(
     with open(prover_toml_path, "w") as f:
 
         circuit_input = ""
+        public_inputs = []
         # Go through all the real nodes here
         for i in range(n_nodes):
             adj_list = [True if graph.has_edge(i, j) else False for j in range(n_nodes)] \
                 + [False for j in range(NUM_NODES-n_nodes)]
-            adj_list = str(adj_list).lower()
+            adj_list_s = str(adj_list).lower()
             
             edge_matrix = [graph.get_edge_data(i, j)['weight'] if graph.has_edge(i, j) else 0 for j in range(n_nodes)] \
                 + [0 for j in range(NUM_NODES-n_nodes)]
             node_text = f"""[[graph.nodes]]
 index = {i}
 value = {0}
-adj_list = {adj_list}
+adj_list = {adj_list_s}
 edge_matrix = {edge_matrix}
 
 """
             circuit_input += node_text
+            public_inputs += [i, 0, *adj_list, *edge_matrix]
         
         # Add padding
         for i in range(NUM_NODES-n_nodes):
             adj_list = [False for j in range(NUM_NODES)]
-            adj_list = str(adj_list).lower()
+            adj_list_s = str(adj_list).lower()
             edge_matrix = [0 for j in range(NUM_NODES)]
             node_text = f"""[[graph.nodes]]
 index = {i+n_nodes}
 value = {0}
-adj_list = {adj_list}
+adj_list = {adj_list_s}
 edge_matrix = {edge_matrix}
 
 """
             circuit_input += node_text
+            public_inputs += [i+n_nodes, 0, *adj_list, *edge_matrix]
 
         adj_list = [True if graph.has_edge(u_index, j) else False for j in range(n_nodes)] \
                 + [False for j in range(NUM_NODES-n_nodes)]
-        adj_list = str(adj_list).lower()
+        adj_list_s = str(adj_list).lower()
         edge_matrix = [graph.get_edge_data(u_index, j)['weight'] if graph.has_edge(u_index, j) else 0 for j in range(n_nodes)]\
                 + [0 for j in range(NUM_NODES-n_nodes)]
         circuit_input += f"""[u]
 index = {u_index}
 value = {0}
-adj_list = {adj_list}
+adj_list = {adj_list_s}
 edge_matrix = {edge_matrix}
 """
+        public_inputs += [u_index, 0, *adj_list, *edge_matrix]
 
         f.write(circuit_input)
+        print(json.dumps(public_inputs))
 
 
 def solve_circuit(prover_toml_name, proof_output, algorithm):

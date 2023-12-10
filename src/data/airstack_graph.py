@@ -28,7 +28,7 @@ async def get_token_transfers(addresses, token_address=None):
             ]
           }
           blockchain: ethereum
-          limit: 20
+          limit: 5
           order: { blockTimestamp: DESC }
         }
       ) {
@@ -186,12 +186,37 @@ def draw_graph(G):
   plt.title("Token Transfer Graph")
   plt.show()
 
+def draw_graph_with_cycle(G, cycle):
+    pos = nx.circular_layout(G)
+    node_labels = {node: node[:6] + '...' + node[-4:] for node in G.nodes()}
+
+    nx.draw(G, pos, with_labels=False, node_color='lightblue', edge_color='gray', node_size=2000, font_size=10)
+    nx.draw_networkx_labels(G, pos, labels=node_labels)
+
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+    # Highlight the cycle
+    if cycle:
+        cycle_edges = [(edge[0], edge[1]) for edge in cycle]
+        nx.draw_networkx_edges(G, pos, edgelist=cycle_edges, edge_color='red', width=2)
+
+    plt.title("Token Transfer Graph")
+    plt.show()
+
+def find_cycle(G):
+    try:
+        cycle = nx.find_cycle(G, orientation='original')
+    except nx.NetworkXNoCycle:
+        print("No cycle found")
+        cycle = []
+    return cycle
 
 async def main():
   USDC_TOKEN_ADDR = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
   USDT_TOKEN_ADDR = '0xdac17f958d2ee523a2206206994597c13d831ec7'
 
-  raw_token_transfers = await get_token_transfers_recursive(["0x1248d8d1677296e7d4e52fe4f6c14c5ede5025b3"], token_address=USDC_TOKEN_ADDR, depth=3)
+  raw_token_transfers = await get_token_transfers_recursive(["0x844ca53d5b3c61da3a6441851cee6d8c530e44d8"], token_address=USDC_TOKEN_ADDR, depth=3)
   token_transfers = [parse_token_transfers(data) for data in raw_token_transfers]
   # Flatten token_transfers
   token_transfers = [item for sublist in token_transfers for item in sublist]
@@ -200,7 +225,8 @@ async def main():
   graph_representation = create_graph_representation(usdc_token_transfers)
   print(graph_representation)
   G = create_approx_graph(graph_representation)
-  draw_graph(G)
+  # G.add_edge('0xef8801eaf234ff82801821ffe2d78d60a0237f97', '0x70219c18604debf89379d566a622bde2c5bc7621', weight=500)
+  draw_graph_with_cycle(G, None)
 
   # Save a static file of the graph G
   with open("graph.gpickle", "wb") as f:
