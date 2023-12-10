@@ -138,8 +138,9 @@ def draw_graph(G):
   # Drawing the graph with a multi-edge layout
   pos = nx.spring_layout(G)
 
-  # Draw the nodes
+  # Draw the nodes with labels
   nx.draw_networkx_nodes(G, pos, node_color='lightblue', node_size=2000)
+  nx.draw_networkx_labels(G, pos)
 
   # Draw the edges
   for u, v, data in G.edges(data=True):
@@ -155,9 +156,25 @@ def draw_graph(G):
 async def main():
   USDC_TOKEN_ADDR = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
   USDT_TOKEN_ADDR = '0xdac17f958d2ee523a2206206994597c13d831ec7'
+  WETH_TOKEN_ADDR = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+  WBTC_TOKEN_ADDR = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
 
-  raw_pools = await get_pools(token0=USDC_TOKEN_ADDR, token1=USDT_TOKEN_ADDR)
-  pools = parse_pools(raw_pools)
+  raw_pools_usdc_usdt = await get_pools(token0=USDC_TOKEN_ADDR, token1=USDT_TOKEN_ADDR)
+  pools_usdc_usdt = parse_pools(raw_pools_usdc_usdt)
+
+  raw_pools_usdc_weth = await get_pools(token0=USDC_TOKEN_ADDR, token1=WETH_TOKEN_ADDR)
+  pools_usdc_weth = parse_pools(raw_pools_usdc_weth)
+
+  raw_pools_usdt_weth = await get_pools(token0=WETH_TOKEN_ADDR, token1=USDT_TOKEN_ADDR)
+  pools_usdt_weth = parse_pools(raw_pools_usdt_weth)
+
+  raw_pools_wbtc_usdc = await get_pools(token0=WBTC_TOKEN_ADDR, token1=USDC_TOKEN_ADDR)
+  pools_wbtc_usdc = parse_pools(raw_pools_wbtc_usdc)
+
+  raw_pools_wbtc_usdt = await get_pools(token0=WBTC_TOKEN_ADDR, token1=USDT_TOKEN_ADDR)
+  pools_wbtc_usdt = parse_pools(raw_pools_wbtc_usdt)
+
+  pools = pools_usdc_usdt + pools_usdc_weth + pools_usdt_weth + pools_wbtc_usdc + pools_wbtc_usdt
 
   graph_representation = create_graph_representation(pools)
   # print(graph_representation)
