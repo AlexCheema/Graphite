@@ -1,0 +1,10 @@
+[package]
+name = "Graphite_Page_Rank"
+authors = ["Eito Miyamura"]
+description = "Prove Graph Algorithms"
+compiler_version = "0.19.4"
+license = "MIT"
+type = "bin"
+
+[dependencies]
+
