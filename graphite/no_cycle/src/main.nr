@@ -6,7 +6,7 @@ struct Node {
     index: u8,
     value: u8,
     adj_list: [bool; n_nodes],
-    edge_matrix: [u8; n_nodes],
+    edge_matrix: [u16; n_nodes],
 }
 
 global n_nodes: u8 = 10; 
@@ -17,36 +17,47 @@ struct Graph {
 }
 
 
-fn main(graph: pub Graph, u: pub Node) -> pub [u8; n_nodes]{
+fn main(graph: pub Graph, u: pub Node) -> pub bool{
 
-    let mut level: [u8; n_nodes] = [0; n_nodes]; // Initialize level array
     let mut visited: [bool; n_nodes] = [false; n_nodes]; // Initialize visited array
+    let mut tx_values: [u16; n_nodes] = [65535; n_nodes];
 
     // Simulating a queue with an array and head & tail 
-    let mut queue: [u8; n_nodes] = [0; n_nodes];
+    let mut queue: [(u8,u16); n_nodes] = [(0,0); n_nodes];
     let mut head = 0;
     let mut tail: Field = 1;
-    queue[head] = u.index;
-    level[u.index as Field] = 1;
-
+    let mut wash_trade = false;
+    queue[head] = (u.index,0); 
 
     for _i in 0..10 {
         // Remote v_i from the queue
-        let v_i: Field = queue[head] as Field;
+        let (current_index, current_value) = queue[head];
         head += 1;
         
+        let current_node = graph.nodes[current_index];
         // Look at nodes connected to v_i, if not visited, add to queue
         for j in 0..10 {
-            if graph.nodes[v_i].adj_list[j] & !visited[j] {
-                queue[tail] = j as u8;
-                level[j] = level[v_i] + 1;
-                visited[j] = true;
-                tail += 1;
+            if current_node.adj_list[j] {
+                let tx_value = current_node.edge_matrix[j];
+                let next_value = tx_value + current_value;
+                if  (!visited[j]) | (tx_values[j] > next_value) {
+
+                    visited[j] = true;
+                    
+                    if (j == u.index) & (next_value > 0) {
+                        wash_trade = true;
+                    }
+
+                    queue[tail] = (j as u8, next_value as u16);
+                    tail += 1;
+                }
             }
+
+
         }
     }
+    wash_trade
 
-    level
 }
 
 
@@ -78,17 +89,9 @@ fn test_main() {
 
 
     let graph = Graph { nodes: nodes };
-    let result = main(graph, nodes[0]);
+    let wash_trade = main(graph, nodes[0]);
 
     std::println("Hello Testing");
-    std::println(result[0]);
-    std::println(result[1]);
-    std::println(result[2]);
-    std::println(result[3]);
-
-    assert(result[0] == 1);
-    assert(result[1] == 2);
-    assert(result[2] == 3);
-    assert(result[3] == 3);
+    std::println(wash_trade);
 
 }
