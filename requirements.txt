@@ -1,0 +1,4 @@
+airstack==0.0.7
+matplotlib==3.8.2
+matplotlib-inline==0.1.6
+networkx==3.1

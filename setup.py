@@ -12,6 +12,6 @@ setup(
     url='https://github.com/AlexCheema/Graphite',
     license='LICENSE',
     install_requires=[
-        # List your package dependencies here
+        'airstack',
     ],
 )
