@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 import networkx
 import numpy as np
 import pickle
+from typing import List
 
 NUM_NODES = 10
 
@@ -40,7 +41,7 @@ def setup_circuit(
     n_nodes = len(graph.nodes())
 
     # Write to prover toml
-    prover_toml_path = f"{algorithm}/{prover_toml_name}.toml"
+    prover_toml_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), f"{algorithm}/{prover_toml_name}.toml")
     with open(prover_toml_path, "w") as f:
 
         circuit_input = ""
@@ -93,7 +94,7 @@ edge_matrix = {edge_matrix}
 def solve_circuit(prover_toml_name, proof_output, algorithm):
     import subprocess
 
-    os.chdir(algorithm)
+    os.chdir(os.path.join(os.path.dirname(os.path.realpath(__file__)), algorithm))
     subprocess.check_output(
         [
             "nargo",
@@ -104,7 +105,7 @@ def solve_circuit(prover_toml_name, proof_output, algorithm):
             proof_output,
         ]
     )
-    os.chdir("..")
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
     # shutil.copyfile(os.path.join("proofs", f"{prover_toml_name}.proof"), proof_output)
 
@@ -112,7 +113,7 @@ def solve_circuit(prover_toml_name, proof_output, algorithm):
 def verify_circuit(proof_output, algorithm):
     import subprocess
 
-    os.chdir(algorithm)
+    os.chdir(os.path.join(os.path.dirname(os.path.realpath(__file__)), algorithm))
     subprocess.check_call(
         [
             "nargo",
@@ -121,7 +122,7 @@ def verify_circuit(proof_output, algorithm):
             proof_output,
         ]
     )
-    os.chdir("..")
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 def work(graph, u_index, prover_toml_name, proof_output, algorithm):
     print("Checking graph...")
@@ -139,6 +140,32 @@ def work(graph, u_index, prover_toml_name, proof_output, algorithm):
     verify_circuit(proof_output, algorithm)
 
     print("Done!")
+
+def no_cycle(G,
+        u_index,
+        prover_toml_name="tryprover",
+        proof_output="tryoutput"):
+    work(
+        G,
+        u_index,
+        prover_toml_name,
+        proof_output,
+        "no_cycle"
+    )
+    return "", ""
+
+def bfs(G,
+        u_index,
+        prover_toml_name="tryprover",
+        proof_output="tryoutput") -> List[int]:
+    work(
+        G,
+        u_index,
+        prover_toml_name,
+        proof_output,
+        "bfs"
+    )
+    return "", ""
 
 
 def main(args=None):
