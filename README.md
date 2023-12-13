@@ -1,4 +1,4 @@
-# Graphite - Write Succinct Proofs for Graphs easily!
+# Graphite - Python 1 liner for Graph Algorithm Succinct Proofs!
 
 ## Value Proposition
  - **ZKPs Accessible via Python:** You can generate succinct proofs for any graph algorithms, easily using just python without knowing any ZKP-domain specific languages
@@ -7,6 +7,12 @@
  
 
 # Getting Started
+
+## Requirements:
+ - `python`, `pip`
+ - `nargo`: Easiest way is via option 1 for `noirup`: https://noir-lang.org/getting_started/nargo_installation#option-1-noirup
+ - (Optional) VSCode Noir Language Extension 
+
 
 ## Quick Run
 
