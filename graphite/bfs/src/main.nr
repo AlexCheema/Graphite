@@ -2,18 +2,18 @@ use dep::std;
 
 // Unfortunately, we get O(n^2) space & time complexity
 
-struct Node<T, N> {
+struct Node<T, E, N> {
     index: u8,
     value: T,
     adj_list: [bool; N],
-    edge_matrix: [u8; N],
+    edge_matrix: [E; N],
 }
 
-struct Graph<T, N> {
-    nodes: [Node<T, N>; N],
+struct Graph<T, E, N> {
+    nodes: [Node<T, E, N>; N],
 }
 
-fn bfs<T, N>(graph: Graph<T, N>, u: Node<T, N>) -> [u8; N]{
+fn bfs<T, E, N>(graph: Graph<T, E, N>, u: Node<T, E, N>) -> [u8; N]{
 
     let mut level: [u8; N] = [0; N]; // Initialize level array
     let mut visited: [bool; N] = [false; N]; // Initialize visited array
@@ -45,7 +45,7 @@ fn bfs<T, N>(graph: Graph<T, N>, u: Node<T, N>) -> [u8; N]{
     level
 }
 
-fn main(graph: pub Graph<u8, 10>, u: pub Node<u8, 10>) -> pub [u8; 10] {
+fn main(graph: pub Graph<u8, u8, 10>, u: pub Node<u8, u8, 10>) -> pub [u8; 10] {
     bfs(graph, u)
 }
 
@@ -55,7 +55,7 @@ fn main(graph: pub Graph<u8, 10>, u: pub Node<u8, 10>) -> pub [u8; 10] {
 fn test_bfs() {
     std::println("Hello Test");
 
-    let mut nodes: [Node<u8, 10>; 10] = [Node { index: 0,
+    let mut nodes: [Node<u8, u8, 10>; 10] = [Node { index: 0,
                                              value: 0,
                                              adj_list: [false; 10],
                                              edge_matrix: [0; 10] }
